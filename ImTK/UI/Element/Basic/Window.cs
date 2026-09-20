@@ -333,6 +333,7 @@ namespace ImTK.UI
         public override void OnEndRender()
         {
             m_cachedWindowHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AllowWhenBlockedByActiveItem);
+            ImGui.Dummy(System.Numerics.Vector2.Zero);
             End();
 
             if (!m_isOpenForImGuiCache && m_isOpen)

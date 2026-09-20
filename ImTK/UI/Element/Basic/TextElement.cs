@@ -35,6 +35,10 @@ namespace ImTK.UI
                     unsafe { ImGui.TextUnformatted((byte*)m_textBuffer.Data); }
                 }
             }
+            else
+            {
+                ImGui.Dummy(System.Numerics.Vector2.Zero);
+            }
         }
     }
 }
