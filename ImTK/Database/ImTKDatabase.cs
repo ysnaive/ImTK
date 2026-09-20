@@ -11,10 +11,20 @@ namespace ImTK.Database
     {
         internal static AssetManager Manager { get; private set; } = null!;
 
-        internal static void Initialize()
+        public static void Initialize()
         {
-            // 使用 ImTKEnvironment 提供的最新 LocalDataPath (支援 DevelopmentLocalDataPath 覆寫)
-            Manager = new AssetManager(ImTKEnvironment.LocalDataPath, isReadOnly: false);
+            if (Manager == null)
+            {
+                Manager = new AssetManager(ImTKEnvironment.LocalDataPath, isReadOnly: false);
+            }
+        }
+
+        private static void EnsureInitialized()
+        {
+            if (Manager == null)
+            {
+                Initialize();
+            }
         }
 
         /// <summary>
@@ -25,6 +35,7 @@ namespace ImTK.Database
         /// <returns>載入的資源物件。</returns>
         public static T Load<T>(string path) where T : IAsset
         {
+            EnsureInitialized();
             return Manager.Load<T>(path);
         }
 
@@ -33,6 +44,7 @@ namespace ImTK.Database
         /// </summary>
         public static void RegisterImporter(System.Type assetType, object importerTypeOrInstance)
         {
+            EnsureInitialized();
             Manager.RegisterImporter(assetType, importerTypeOrInstance);
         }
 
@@ -41,6 +53,7 @@ namespace ImTK.Database
         /// </summary>
         public static void RegisterExporter(System.Type assetType, object exporterTypeOrInstance)
         {
+            EnsureInitialized();
             Manager.RegisterExporter(assetType, exporterTypeOrInstance);
         }
 
@@ -49,11 +62,24 @@ namespace ImTK.Database
         /// </summary>
         public static void SaveAssets()
         {
+            EnsureInitialized();
             Manager.SaveAssets();
+        }
+
+        /// <summary>
+        /// 僅將指定的特定資源寫回磁碟（若被標記為 Dirty）。
+        /// 杜絕全庫遍歷連帶刷盤造成的寫入放大與競爭。
+        /// </summary>
+        /// <param name="specific">目標資源物件。</param>
+        public static void SaveAsset(IAsset specific)
+        {
+            EnsureInitialized();
+            Manager.SaveAsset(specific);
         }
 
         internal static void UnloadAll()
         {
+            EnsureInitialized();
             Manager.UnloadAll();
         }
 
@@ -63,6 +89,7 @@ namespace ImTK.Database
         /// <param name="path">相對於 LocalDataPath 的相對路徑。</param>
         public static void Unload(string path)
         {
+            EnsureInitialized();
             Manager.Unload(path);
         }
     }

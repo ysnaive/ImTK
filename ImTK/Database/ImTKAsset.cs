@@ -37,7 +37,7 @@ namespace ImTK.Database
         /// 標記此資源的狀態已被修改，將排入存檔佇列。
         /// 若資源被標記為唯讀 (IsReadOnly == true)，此操作將會拋出例外。
         /// </summary>
-        public void MarkDirty()
+        public virtual void MarkDirty()
         {
             if (IsReadOnly)
             {

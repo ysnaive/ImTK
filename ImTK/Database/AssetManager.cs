@@ -197,6 +197,25 @@ namespace ImTK.Database
             }
         }
 
+        /// <summary>
+        /// 僅將指定的特定資源寫回磁碟（若被標記為 Dirty 且非唯讀）。
+        /// 杜絕全庫遍歷連帶刷盤造成的寫入放大與競爭。
+        /// </summary>
+        public void SaveAsset(IAsset specific)
+        {
+            if (_isReadOnly) return;
+            if (specific == null || !specific.IsDirty || specific.IsReadOnly) return;
+
+            foreach (var kvp in _cache)
+            {
+                if (ReferenceEquals(kvp.Value, specific))
+                {
+                    ExportAsset(specific, kvp.Key);
+                    break;
+                }
+            }
+        }
+
         private void ExportAsset(IAsset asset, string normalizedPath)
         {
             Type assetType = asset.GetType();
