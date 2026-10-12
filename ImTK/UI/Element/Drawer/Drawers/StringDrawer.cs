@@ -17,6 +17,13 @@ namespace ImTK.UI
                 UpdateTextFieldMode(this.value);
             }
         }
+
+        /// <summary>
+        /// 若為 true，打字期間僅更新內部文字與 UI 佈局 (SetValueWithoutNotify)，
+        /// 唯有在按下 Enter 或失焦時 (IsItemDeactivatedAfterEdit) 才觸發 SetValueWithChanged。
+        /// 預設為 false 保持即時回報相容性。
+        /// </summary>
+        public bool commitOnDeactivateOnly { get; set; } = false;
         
         private FieldElement m_fieldElement;
 
@@ -117,9 +124,23 @@ namespace ImTK.UI
                         changed = ImGui.InputText(m_drawer.cachedId, ref v, 32768, flags);
                     }
 
-                    if (changed || ImGui.IsItemDeactivatedAfterEdit())
+                    if (m_drawer.commitOnDeactivateOnly)
                     {
-                        m_drawer.SetValueWithChanged(v);
+                        if (changed)
+                        {
+                            m_drawer.SetValueWithoutNotify(v);
+                        }
+                        if (ImGui.IsItemDeactivatedAfterEdit())
+                        {
+                            m_drawer.SetValueWithChanged(v);
+                        }
+                    }
+                    else
+                    {
+                        if (changed || ImGui.IsItemDeactivatedAfterEdit())
+                        {
+                            m_drawer.SetValueWithChanged(v);
+                        }
                     }
                 }
             }
