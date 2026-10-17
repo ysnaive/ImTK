@@ -44,7 +44,7 @@ namespace ImTK.UI.Persistence
                     {
                         try
                         {
-                            element.OnReadState(reader);
+                            element.InternalOnReadState(reader);
                             element.m_hasLoadedState = true;
                         }
                         catch (Exception e)
@@ -97,7 +97,7 @@ namespace ImTK.UI.Persistence
 
                             try
                             {
-                                element.OnWriteState(writer);
+                                element.InternalOnWriteState(writer);
                             }
                             catch (Exception e)
                             {
@@ -116,6 +116,7 @@ namespace ImTK.UI.Persistence
             if (anyDirty)
             {
                 cacheAsset.MarkDirty();
+                ImTKDatabase.SaveAsset(cacheAsset);
             }
         }
     }

@@ -261,6 +261,14 @@ namespace ImTK.UI
             bool isExpanded;
             unsafe
             {
+                var mainViewport = ImGui.GetMainViewport();
+                if (mainViewport.Handle != null && mainViewport.WorkSize.X > 0 && mainViewport.WorkSize.Y > 0)
+                {
+                    float defaultW = Math.Max(mainViewport.WorkSize.X * 0.30f, resolvedLayoutState.minWidth ?? 0f);
+                    float defaultH = Math.Max(mainViewport.WorkSize.Y * 0.40f, resolvedLayoutState.minHeight ?? 0f);
+                    ImGui.SetNextWindowSize(new System.Numerics.Vector2(defaultW, defaultH), ImGuiCond.FirstUseEver);
+                }
+
                 if (!flags.noClose)
                 {
                     isExpanded = ImGui.Begin((byte*)imguiIdPtr, ref isOpenForImGui, windowFlags);

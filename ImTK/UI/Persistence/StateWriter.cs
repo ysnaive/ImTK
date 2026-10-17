@@ -11,9 +11,9 @@ namespace ImTK.UI.Persistence
         private readonly ImTKCacheAsset _asset;
         private readonly string _prefix;
         
-        internal bool IsDirty { get; private set; }
+        public bool IsDirty { get; internal set; }
 
-        internal StateWriter(ImTKCacheAsset asset, string prefix)
+        public StateWriter(ImTKCacheAsset asset, string prefix)
         {
             _asset = asset;
             _prefix = prefix;

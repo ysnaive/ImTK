@@ -121,6 +121,7 @@ namespace ImTK.UI
                 }
 
                 cache.MarkDirty();
+                Database.ImTKDatabase.SaveAsset(cache);
                 ImTKLog.Trace("Workspace saved.");
             }
             catch (Exception e)

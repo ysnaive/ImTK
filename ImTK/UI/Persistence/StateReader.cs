@@ -11,7 +11,7 @@ namespace ImTK.UI.Persistence
         private readonly ImTKCacheAsset _asset;
         private readonly string _prefix;
 
-        internal StateReader(ImTKCacheAsset asset, string prefix)
+        public StateReader(ImTKCacheAsset asset, string prefix)
         {
             _asset = asset;
             _prefix = prefix;
@@ -45,6 +45,19 @@ namespace ImTK.UI.Persistence
             if (_asset.Bools.TryGetValue(GetKey(localKey), out bool value))
                 return value;
             return defaultValue;
+        }
+
+        public IEnumerable<KeyValuePair<string, bool>> GetBoolsWithPrefix(string prefix)
+        {
+            string fullPrefix = GetKey(prefix);
+            foreach (var kvp in _asset.Bools)
+            {
+                if (kvp.Key.StartsWith(fullPrefix, StringComparison.Ordinal))
+                {
+                    string localSuffix = kvp.Key.Substring(fullPrefix.Length);
+                    yield return new KeyValuePair<string, bool>(localSuffix, kvp.Value);
+                }
+            }
         }
     }
 }
