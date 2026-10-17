@@ -38,6 +38,7 @@ namespace ImTK.UI
         public string name { get; set; }
         public int priority { get; set; }
         public bool isMenuBar { get; set; } = false;
+        public System.Numerics.Vector4? TextColor { get; set; }
 
         private List<IMenuElement> m_sortedMenuElements = new List<IMenuElement>();
 
@@ -162,6 +163,8 @@ namespace ImTK.UI
 
         private bool m_menuOpenedCache;
 
+        private bool m_pushedTextColor = false;
+
         public override bool OnBeginRender()
         {
             m_menuOpenedCache = false;
@@ -172,7 +175,17 @@ namespace ImTK.UI
             }
             else
             {
+                if (TextColor.HasValue)
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Text, TextColor.Value);
+                    m_pushedTextColor = true;
+                }
                 m_menuOpenedCache = ImGui.BeginMenu(name);
+                if (m_pushedTextColor)
+                {
+                    ImGui.PopStyleColor();
+                    m_pushedTextColor = false;
+                }
             }
 
             if (m_menuOpenedCache)
