@@ -28,6 +28,18 @@ namespace ImTK.Database
         }
 
         /// <summary>
+        /// 從任意絕對路徑載入並解析資源（跳過 LocalDataPath 前綴安全檢查，不納入預設本地快取）。
+        /// </summary>
+        /// <typeparam name="T">期望的資源型別。</typeparam>
+        /// <param name="absolutePath">檔案絕對路徑。</param>
+        /// <returns>載入的資源物件。</returns>
+        public static T ImportExternal<T>(string absolutePath) where T : IAsset
+        {
+            EnsureInitialized();
+            return Manager.ImportExternal<T>(absolutePath);
+        }
+
+        /// <summary>
         /// 從本地資料庫中載入資源。
         /// </summary>
         /// <typeparam name="T">期望的資源型別。</typeparam>

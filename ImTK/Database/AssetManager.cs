@@ -140,6 +140,25 @@ namespace ImTK.Database
 
         #region Core IO
 
+        /// <summary>
+        /// 從任意絕對路徑載入並解析資源（跳過根目錄前綴安全檢查，不納入預設本地快取）。
+        /// </summary>
+        public T ImportExternal<T>(string absolutePath) where T : IAsset
+        {
+            if (!File.Exists(absolutePath))
+            {
+                throw new FileNotFoundException($"External asset file not found: {absolutePath}");
+            }
+
+            var importer = GetImporter<T>();
+            var newAsset = importer.Import(absolutePath, Path.GetFileName(absolutePath));
+            if (newAsset is ImTKAsset implAsset)
+            {
+                implAsset.IsReadOnly = true;
+            }
+            return (T)newAsset;
+        }
+
         public T Load<T>(string relativePath) where T : IAsset
         {
             string normalizedPath = relativePath.Replace('\\', '/');
